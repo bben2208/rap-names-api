@@ -1,6 +1,9 @@
 const express = require("express");
+const path = require("path");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 const rappers = {
     '21 savage': {
         'age': 29,
@@ -19,26 +22,16 @@ const rappers = {
     }
 };
 
+// Serve index.html if it exists
 app.get('/', (req, res) => {
-    res.send('API is running');
-  });
-  
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-app.get('/', (request,response) => {
-    response.sendFile(__dirname + '/index.html')
-})
+// API Endpoint
+app.get('/api/:name', (req, res) => {
+    const rapperName = req.params.name.toLowerCase();
+    res.json(rappers[rapperName] || rappers['unknown']);
+});
 
-app.listen(PORT,(err) => {
-    console.log(`server is running on ${PORT}`)
-})
-
-app.get('/api/:name', (request,response) => {
- const rapperName =  request.params.name.toLocaleLowerCase()
- if(rappers[rapperName]){
-   response.json(rappers[rapperName])
- }else{
-     response.json(rappers['unknown'])
- }
-      
-})
+// Start Server (ONLY ONE LISTEN CALL)
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
