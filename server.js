@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 3000;
 const rappers = {
     '21 savage': {
         'age': 29,
@@ -18,6 +18,12 @@ const rappers = {
         'birthLocation': 'unknown'
     }
 };
+
+app.get('/', (req, res) => {
+    res.send('API is running');
+  });
+  
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 app.get('/', (request,response) => {
     response.sendFile(__dirname + '/index.html')
