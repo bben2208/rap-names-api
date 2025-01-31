@@ -5,6 +5,15 @@ const cors = require("cors");  // Import CORS
 
 app.use(cors());  // Enable CORS
 
+app.use(cors({
+    origin: '',  // Allows any domain
+    methods: 'GET,POST,PUT,DELETE,PATCH,OPTIONS',
+    allowedHeaders: 'Content-Type,Authorization'
+  }));
+  
+  // Ensure OPTIONS preflight requests are handled
+  app.options('', cors());
+
 const PORT = process.env.PORT || 3000;
 
 const rappers = {
