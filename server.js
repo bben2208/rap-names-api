@@ -1,50 +1,50 @@
 const express = require("express");
+const cors = require("cors");
+
 const app = express();
-const cors = require("cors");  // Import CORS
-
-
-app.use(cors());  // Enable CORS
-
-app.use(cors({
-    origin: '',  // Allows any domain
-    methods: 'GET,POST,PUT,DELETE,PATCH,OPTIONS',
-    allowedHeaders: 'Content-Type,Authorization'
-  }));
-  
-  // Ensure OPTIONS preflight requests are handled
-  app.options('', cors());
-
 const PORT = process.env.PORT || 3000;
 
+// ✅ Force CORS headers manually
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    next();
+});
+
+// ✅ Ensure CORS middleware is also applied
+app.use(cors());
+
 const rappers = {
-    '21 savage': {
-        'age': 29,
-        'birthName': 'Shéyaa Bin Abraham-Joseph',
-        'birthLocation': 'London, England'
+    "21 savage": {
+        age: 29,
+        birthName: "Shéyaa Bin Abraham-Joseph",
+        birthLocation: "London, England"
     },
-    'chance the rapper': { 
-        'age': 27,
-        'birthName': 'Chancelor Jonathan Bennett',
-        'birthLocation': 'Chicago, Illinois'
+    "chance the rapper": { 
+        age: 27,
+        birthName: "Chancelor Jonathan Bennett",
+        birthLocation: "Chicago, Illinois"
     },
-    'unknown': {
-        'age': 0,
-        'birthName': 'unknown',
-        'birthLocation': 'unknown'
+    "unknown": {
+        age: 0,
+        birthName: "unknown",
+        birthLocation: "unknown"
     }
 };
 
-app.get('/', (req, res) => {
-    res.send('API is running');
+app.get("/", (req, res) => {
+    res.send("API is running");
 });
 
-app.get('/api/:name', (request, response) => {
-    const rapperName = request.params.name.toLowerCase();
-    if (rappers[rapperName]) {
-        response.json(rappers[rapperName]);
-    } else {
-        response.json(rappers['unknown']);
-    }
+app.get("/api/:name", (req, res) => {
+    const rapperName = req.params.name.toLowerCase();
+    res.json(rappers[rapperName] || rappers["unknown"]);
+});
+
+// ✅ Handle preflight requests (important for CORS)
+app.options("*", (req, res) => {
+    res.sendStatus(204);
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
