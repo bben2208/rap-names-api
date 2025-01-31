@@ -1,8 +1,6 @@
 const express = require("express");
-const path = require("path");
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000; // Use PORT from Railway, fallback to 3000
 
 const rappers = {
     '21 savage': {
@@ -22,16 +20,21 @@ const rappers = {
     }
 };
 
-// Serve index.html if it exists
+// Home route
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(__dirname + '/index.html');
 });
 
-// API Endpoint
+// API route
 app.get('/api/:name', (req, res) => {
     const rapperName = req.params.name.toLowerCase();
-    res.json(rappers[rapperName] || rappers['unknown']);
+    if (rappers[rapperName]) {
+        res.json(rappers[rapperName]);
+    } else {
+        res.json(rappers['unknown']);
+    }
 });
 
-// Start Server (ONLY ONE LISTEN CALL)
+
+// Start the server (ONLY ONE `app.listen`)
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
