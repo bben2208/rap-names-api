@@ -1,6 +1,10 @@
 const express = require("express");
+const cors = require("cors");  // Import CORS
+
 const app = express();
-const PORT = process.env.PORT || 3000; // Use PORT from Railway, fallback to 3000
+app.use(cors());  // Enable CORS
+
+const PORT = process.env.PORT || 3000;
 
 const rappers = {
     '21 savage': {
@@ -20,21 +24,17 @@ const rappers = {
     }
 };
 
-// Home route
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.send('API is running');
 });
 
-// API route
-app.get('/api/:name', (req, res) => {
-    const rapperName = req.params.name.toLowerCase();
+app.get('/api/:name', (request, response) => {
+    const rapperName = request.params.name.toLowerCase();
     if (rappers[rapperName]) {
-        res.json(rappers[rapperName]);
+        response.json(rappers[rapperName]);
     } else {
-        res.json(rappers['unknown']);
+        response.json(rappers['unknown']);
     }
 });
 
-
-// Start the server (ONLY ONE `app.listen`)
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
